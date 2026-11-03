@@ -6,7 +6,6 @@ namespace Medox\OpsChannel\Tests;
 
 use Medox\OpsChannel\OpsChannelServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Spatie\LaravelData\LaravelDataServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -31,7 +30,6 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
-            LaravelDataServiceProvider::class,
             OpsChannelServiceProvider::class,
         ];
     }
