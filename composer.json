@@ -1,8 +1,8 @@
 {
     "name": "medox/ops-channel",
-    "description": "OpsChannel - run an Artisan command on a deployed Laravel application over a signed, single-use Ed25519 challenge-response handshake.",
+    "description": "A signed, single-use Ed25519 challenge-response channel for Laravel applications.",
     "type": "library",
-    "keywords": ["laravel", "artisan", "ed25519", "handshake", "operations"],
+    "keywords": ["laravel", "ed25519", "handshake", "signature", "authentication"],
     "license": "MIT",
     "authors": [
         {
