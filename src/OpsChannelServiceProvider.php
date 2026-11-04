@@ -47,8 +47,49 @@ final class OpsChannelServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Merge this package's nested config defaults one level deeper than
+     * mergeConfigFrom() reaches.
+     *
+     * mergeConfigFrom() merges top-level keys only. An application that names
+     * `routes` to pin its own prefix therefore replaces the whole array and
+     * loses `enabled`, `session_throttle` and `middleware` with it — and since
+     * those fall back to hardcoded defaults where they are read, a dropped
+     * `enabled` reads as true. OPS_CHANNEL_ROUTES_ENABLED then stops working:
+     * documented, apparently configured, and silently inert. The same applies
+     * to `handshake`.
+     *
+     * The application's own keys still win; only the ones it did not name are
+     * filled in.
+     *
+     * Called from boot() rather than register() on purpose: it has to run after
+     * everything that sets this config, and in a test harness that is later than
+     * register(). Everything that reads these values — shouldRegisterRoutes()
+     * below, and the routes file — runs after it here.
+     */
+    private function mergeNestedDefaults(): void
+    {
+        $config = $this->app['config'];
+
+        /** @var array<string, mixed> $defaults */
+        $defaults = require __DIR__.'/../config/ops-channel.php';
+
+        foreach ($defaults as $key => $value) {
+            if (! is_array($value)) {
+                continue;
+            }
+
+            $config->set("ops-channel.{$key}", array_merge(
+                $value,
+                (array) $config->get("ops-channel.{$key}", []),
+            ));
+        }
+    }
+
     public function boot(): void
     {
+        $this->mergeNestedDefaults();
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/ops-channel.php' => $this->app->configPath('ops-channel.php'),

@@ -95,6 +95,9 @@ you would treat shell access to the host.
 | `routes.session_throttle` | `OPS_CHANNEL_SESSION_THROTTLE` | `30,1` | Rate limit on the challenge endpoint. |
 | `routes.middleware` | — | `[]` | Extra middleware for both endpoints, e.g. an IP allow-list. |
 
+Overriding one key of a nested group is enough — naming `routes.prefix` alone keeps
+`enabled`, `session_throttle` and `middleware` on their defaults rather than dropping them.
+
 **The cache store must survive between two requests.** The challenge is written when the
 session opens and read back when the signature arrives. An `array` store refuses every
 call, and a per-worker store refuses any call whose two requests land on different
